@@ -5,20 +5,14 @@ import {
   chakra,
   Grid,
   Text,
-  Input,
-  Button,
-  Select,
+  Divider,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
-  Box,
-  background,
 } from '@chakra-ui/react';
 import { motion, isValidMotionProp } from 'framer-motion';
 
@@ -142,11 +136,15 @@ function Portgrid() {
           </Table>
         </TableContainer>
       </div>
-      <div className="information"></div>
+      <br />
+      <br />
+      <Divider orientation="horizontal" size={100} />
+      <br />
+      <br />
       <Grid templateColumns="repeat(12, 2fr)" gap={10}>
         {PortArray.fill().map((v, i) => (
-          <div className="PortsRender" key={i} onLoad={Farben}>
-            <Text fontSize={16}> PortNr {i}</Text>
+          <div className="PortsRender" key={i} color="black">
+            <Text fontSize={16}> PortNr {i + 1}</Text>
             <Text fontSize={16}> Vlan {PortVlanID[i]}</Text>
             <Ports
               id={i}

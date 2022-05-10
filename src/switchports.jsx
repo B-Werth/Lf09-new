@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 
 import {
@@ -39,7 +39,7 @@ var PortVlanIDs = [];
 var PortFarben = [];
 
 function Portgrid() {
-  const [Vlan_FarbeListe, setVlan_FarbeListe] = useState('lol');
+  const [Vlan_FarbeListe, setVlan_FarbeListe] = useState([]);
 
   const [Port, setPort] = useState(1);
 
@@ -62,14 +62,15 @@ function Portgrid() {
           Vlan_names.push(response.data[i].VlanName);
           Vlan_Farben.push(response.data[i].VlanFarbe);
         }
-
         setVlan_ID(Vlan_IDs);
         setVlan_name(Vlan_names);
+        setVlan_FarbeListe(Vlan_Farben);
       })
 
       .catch(function (error) {
         console.log(error);
       });
+
     Axios.get('/PortData')
       .then(function (response) {
         for (let i = 0; i < response.data.length; i++) {
@@ -78,11 +79,11 @@ function Portgrid() {
         }
 
         setPortVlanID(PortVlanIDs);
-        setVlan_FarbeListe(Vlan_Farben);
+        console.log('yes');
         Farben();
       })
       .catch(function (error) {
-        console.log('erro');
+        console.log('esd');
       });
   }, []);
 
@@ -99,15 +100,15 @@ function Portgrid() {
         console.log(response);
       })
       .catch(function (error) {
-        console.log('erro r');
+        console.log('eror');
       });
   };
 
-  const Farben = () => {
+  let Farben = () => {
     for (let j = 0; j < VlanLengths; j++) {
       for (let k = 0; k < 24; k++) {
         if (PortFarben[k] === j + 1) {
-          PortFarben.splice(k, 1, Vlan_FarbeListe[j]);
+          PortFarben.splice(k, 1, Vlan_Farben[j]);
         }
       }
     }
@@ -141,21 +142,12 @@ function Portgrid() {
           </Table>
         </TableContainer>
       </div>
-      <div className="information">
-        <Input
-          placeholder="text"
-          size="m"
-          onChange={event => setPort(event.target.value)}
-        />
-        <Input placeholder="nummer" size="m" />
-        <Button colorScheme="blue" onClick={Farben}>
-          Button
-        </Button>
-      </div>
+      <div className="information"></div>
       <Grid templateColumns="repeat(12, 2fr)" gap={10}>
         {PortArray.fill().map((v, i) => (
           <div className="PortsRender" key={i} onLoad={Farben}>
-            <Text fontSize={15}>Vlan {PortVlanID[i]}</Text>
+            <Text fontSize={16}> PortNr {i}</Text>
+            <Text fontSize={16}> Vlan {PortVlanID[i]}</Text>
             <Ports
               id={i}
               whileHover={{ scale: 1.1 }}

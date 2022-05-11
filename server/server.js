@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   user: 'root',
   host: 'localhost',
   password: 'password',
-  database: 'switchvlansystem_vlan',
+  database: 'switchvlansystem',
 });
 
 app.post('/create', (req, res) => {

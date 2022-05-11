@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
+import { FaBeer } from 'react-icons/fa';
 
 import {
   chakra,
@@ -9,6 +10,7 @@ import {
   Table,
   Thead,
   Tbody,
+  Button,
   Tr,
   Th,
   Td,
@@ -85,8 +87,7 @@ function Portgrid() {
 
   let VlanArray = new Array(VlanListensize);
 
-  const addPort = () => {
-    console.log(Port);
+  const addVlan = () => {
     Axios.post('/create', {
       Port: Port,
     })
@@ -114,7 +115,6 @@ function Portgrid() {
     <div>
       <div>
         <h2>Switch</h2>
-
         <TableContainer>
           <Table size="md">
             <Thead>
@@ -134,7 +134,17 @@ function Portgrid() {
               ))}
             </Tbody>
           </Table>
-        </TableContainer>
+        </TableContainer>{' '}
+      </div>
+      <div>
+        <Button
+          colorScheme="teal"
+          size="lg"
+          mt="10"
+          onClick={() => console.log('min')}
+        >
+          Vlan Hinzufügen
+        </Button>
       </div>
       <br />
       <br />
@@ -158,7 +168,6 @@ function Portgrid() {
               height="100px"
               whileTap={{
                 scale: 0.8,
-                rotate: -90,
               }}
             ></Ports>
           </div>

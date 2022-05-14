@@ -1,20 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import { FaBeer } from 'react-icons/fa';
+import { HexColorPicker } from 'react-colorful';
 
 import {
+  Box,
   chakra,
   Grid,
   Text,
   Divider,
   Table,
   Thead,
+  Input,
   Tbody,
   Button,
+  FormControl,
+  Flex,
+  FormLabel,
   Tr,
   Th,
   Td,
+  FormHelperText,
+  FormErrorMessage,
   TableContainer,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 import { motion, isValidMotionProp } from 'framer-motion';
 
@@ -111,6 +126,18 @@ function Portgrid() {
     setPort_Farbe(PortFarben);
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const initialRef = React.useRef();
+  const finalRef = React.useRef();
+
+  const [VlanName_input, setVlanName_input] = useState('');
+  const handleVlanName_inputChange = e => setVlanName_input(e.target.value);
+
+  const isError = VlanName_input === '';
+
+  const [color, setColor] = useState('#aabbcc');
+
   return (
     <div>
       <div>
@@ -129,7 +156,7 @@ function Portgrid() {
                 <Tr key={i}>
                   <Td>{Vlan_ID[i]}</Td>
                   <Td>{Vlan_name[i]}</Td>
-                  <Td bg={Vlan_FarbeListe[i]}></Td>
+                  <Td w={20} boxShadow={'dark-lg'} bg={Vlan_FarbeListe[i]}></Td>
                 </Tr>
               ))}
             </Tbody>
@@ -138,17 +165,79 @@ function Portgrid() {
       </div>
       <div>
         <Button
+          ref={finalRef}
+          onClick={onOpen}
           colorScheme="teal"
           size="lg"
           mt="10"
-          onClick={() => console.log('min')}
         >
           Vlan Hinzufügen
         </Button>
+
+        <div>
+          <Modal
+            initialFocusRef={initialRef}
+            finalFocusRef={finalRef}
+            isOpen={isOpen}
+            onClose={onClose}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Neues Vlan</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody pb={6}>
+                <FormControl isInvalid={isError}>
+                  <FormLabel>Vlan Name</FormLabel>
+                  <Input
+                    ref={initialRef}
+                    placeholder="Vlan Name"
+                    value={VlanName_input}
+                    onChange={handleVlanName_inputChange}
+                  />
+
+                  {!isError ? (
+                    <FormHelperText>Geben sie einen Namen ein </FormHelperText>
+                  ) : (
+                    <FormErrorMessage>
+                      Vlan Name wird benötigt.
+                    </FormErrorMessage>
+                  )}
+                </FormControl>
+
+                <FormControl>
+                  <Flex mt={4}>
+                    <FormLabel mt={2}>Port Farbe :</FormLabel>
+                    <Box
+                      ml={5}
+                      bg={color}
+                      h={'40px'}
+                      w={'40px'}
+                      outlineColor={'black'}
+                      outline={true}
+                    ></Box>
+                  </Flex>
+                  <br />
+                  <div mb={40}>
+                    <HexColorPicker color={color} onChange={setColor} />
+                  </div>
+                </FormControl>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3}>
+                  Speichern
+                </Button>
+
+                <Button onClick={onClose}>Cancel</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
+
       <br />
       <br />
-      <Divider orientation="horizontal" size={100} />
+      <Divider orientation="horizontal" />
       <br />
       <br />
       <Grid templateColumns="repeat(12, 2fr)" gap={10}>
@@ -157,6 +246,7 @@ function Portgrid() {
             <Text fontSize={16}> PortNr {i + 1}</Text>
             <Text fontSize={16}> Vlan {PortVlanID[i]}</Text>
             <Ports
+              boxShadow={'dark-lg'}
               id={i}
               whileHover={{ scale: 1.1 }}
               padding="2"

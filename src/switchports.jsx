@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { HexColorPicker } from 'react-colorful';
+import { GiCancel } from 'react-icons/gi';
 
 import {
+  IconButton,
   Box,
   chakra,
   Grid,
@@ -52,8 +54,6 @@ var PortFarben = [];
 function Portgrid() {
   const [Vlan_FarbeListe, setVlan_FarbeListe] = useState([]);
 
-  const [Port, setPort] = useState(1);
-
   const [PortVlanID, setPortVlanID] = useState(0);
 
   const [VlanListensize, setVlanlistensize] = useState(0);
@@ -94,7 +94,7 @@ function Portgrid() {
         Farben();
       })
       .catch(function (error) {
-        console.log('esd');
+        console.log(error);
       });
   }, []);
 
@@ -103,15 +103,17 @@ function Portgrid() {
   let VlanArray = new Array(VlanListensize);
 
   const addVlan = () => {
-    Axios.post('/create', {
-      Port: Port,
-    })
+    Axios.post('/create', { VlanName: VlanName_input, VlanFarbe: color })
       .then(function (response) {
         console.log(response);
       })
-      .catch(function (error) {
-        console.log('eror');
-      });
+      .catch(function (error) {});
+    onClose();
+    window.location.reload();
+  };
+
+  const deleteVlan = id => {
+    Axios.delete(`/delete/${id}`);
   };
 
   let Farben = () => {
@@ -132,7 +134,6 @@ function Portgrid() {
   const finalRef = React.useRef();
 
   const [VlanName_input, setVlanName_input] = useState('');
-  const handleVlanName_inputChange = e => setVlanName_input(e.target.value);
 
   const isError = VlanName_input === '';
 
@@ -156,7 +157,16 @@ function Portgrid() {
                 <Tr key={i}>
                   <Td>{Vlan_ID[i]}</Td>
                   <Td>{Vlan_name[i]}</Td>
-                  <Td w={20} boxShadow={'dark-lg'} bg={Vlan_FarbeListe[i]}></Td>
+                  <Td w={20} bg={Vlan_FarbeListe[i]}></Td>
+
+                  <IconButton
+                    onClick={() => {
+                      deleteVlan(i + 1);
+                    }}
+                    variant="outline"
+                    colorScheme="teal"
+                    icon={<GiCancel />}
+                  />
                 </Tr>
               ))}
             </Tbody>
@@ -192,7 +202,9 @@ function Portgrid() {
                     ref={initialRef}
                     placeholder="Vlan Name"
                     value={VlanName_input}
-                    onChange={handleVlanName_inputChange}
+                    onChange={event => {
+                      setVlanName_input(event.target.value);
+                    }}
                   />
 
                   {!isError ? (
@@ -207,14 +219,7 @@ function Portgrid() {
                 <FormControl>
                   <Flex mt={4}>
                     <FormLabel mt={2}>Port Farbe :</FormLabel>
-                    <Box
-                      ml={5}
-                      bg={color}
-                      h={'40px'}
-                      w={'40px'}
-                      outlineColor={'black'}
-                      outline={true}
-                    ></Box>
+                    <Box ml={5} bg={color} h={'40px'} w={'40px'}></Box>
                   </Flex>
                   <br />
                   <div mb={40}>
@@ -224,7 +229,12 @@ function Portgrid() {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3}>
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={addVlan}
+                  isDisabled={!VlanName_input}
+                >
                   Speichern
                 </Button>
 
@@ -245,6 +255,7 @@ function Portgrid() {
           <div className="PortsRender" key={i} color="black">
             <Text fontSize={16}> PortNr {i + 1}</Text>
             <Text fontSize={16}> Vlan {PortVlanID[i]}</Text>
+
             <Ports
               boxShadow={'dark-lg'}
               id={i}

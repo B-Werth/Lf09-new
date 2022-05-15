@@ -14,10 +14,12 @@ const db = mysql.createConnection({
 });
 
 app.post('/create', (req, res) => {
-  const Port = req.body.Port;
+  const VlanName = req.body.VlanName;
+  const VlanFarbe = req.body.VlanFarbe;
+
   db.query(
-    'INSERT INTO ports (PortNummer) VALUES (?)',
-    [Port],
+    'INSERT INTO vlan (VlanName, VlanFarbe) VALUES (?, ?)',
+    [VlanName, VlanFarbe],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -26,6 +28,17 @@ app.post('/create', (req, res) => {
       }
     }
   );
+});
+
+app.delete('/delete/:id', (req, res) => {
+  const id = req.params.id;
+  db.query('DELETE FROM vlan WHERE VlanID = ?', id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 app.get('/VlanData', (req, res) => {

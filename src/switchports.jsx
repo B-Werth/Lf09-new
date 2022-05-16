@@ -39,6 +39,8 @@ const Ports = chakra(motion.div, {
   shouldForwardProp: isValidMotionProp,
 });
 
+var VlanTabelle = {};
+
 var VlanLengths = 0;
 
 var PortAnzahl = 24;
@@ -66,10 +68,12 @@ function Portgrid() {
   useEffect(() => {
     Axios.get('/VlanData')
       .then(function (response) {
+        VlanTabelle = response.data;
+        console.log(VlanTabelle);
         VlanLengths = response.data.length;
         setVlanlistensize(response.data.length);
         for (let i = 0; i < response.data.length; i++) {
-          Vlan_IDs.push(response.data[i].VlanID);
+          Vlan_IDs.push('VlanID' + response.data[i].VlanID);
           Vlan_names.push(response.data[i].VlanName);
           Vlan_Farben.push(response.data[i].VlanFarbe);
         }
@@ -90,8 +94,8 @@ function Portgrid() {
         }
 
         setPortVlanID(PortVlanIDs);
-        console.log('yes');
-        Farben();
+
+        //Farben();
       })
       .catch(function (error) {
         console.log(error);
@@ -108,6 +112,7 @@ function Portgrid() {
         console.log(response);
       })
       .catch(function (error) {});
+
     onClose();
     window.location.reload();
   };
@@ -161,7 +166,8 @@ function Portgrid() {
 
                   <IconButton
                     onClick={() => {
-                      deleteVlan(i + 1);
+                      deleteVlan(Vlan_ID[i]);
+                      window.location.reload();
                     }}
                     variant="outline"
                     colorScheme="teal"
@@ -261,7 +267,7 @@ function Portgrid() {
               id={i}
               whileHover={{ scale: 1.1 }}
               padding="2"
-              bg={Port_Farbe[i]}
+              bg={VlanTabelle}
               display="flex"
               justifyContent="center"
               alignItems="center"

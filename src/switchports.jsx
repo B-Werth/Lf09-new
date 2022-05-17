@@ -73,7 +73,7 @@ function Portgrid() {
         VlanLengths = response.data.length;
         setVlanlistensize(response.data.length);
         for (let i = 0; i < response.data.length; i++) {
-          Vlan_IDs.push('VlanID' + response.data[i].VlanID);
+          Vlan_IDs.push(response.data[i].VlanID);
           Vlan_names.push(response.data[i].VlanName);
           Vlan_Farben.push(response.data[i].VlanFarbe);
         }

@@ -66,6 +66,8 @@ function Portgrid() {
   const [Vlan_ID, setVlan_ID] = useState(2);
   const [Vlan_name, setVlan_name] = useState('name');
 
+  var PortClick = 0;
+
   useEffect(() => {
     Axios.get('/VlanData')
       .then(function (response) {
@@ -149,6 +151,8 @@ function Portgrid() {
   const [color, setColor] = useState('#aabbcc');
 
   const [PortColor, setPortColor] = useState({});
+
+  const [PortEinstellungen, SetPortEinstellungen] = useState(0);
 
   return (
     <div>
@@ -271,6 +275,8 @@ function Portgrid() {
             color="black"
             onClick={() => {
               PortonOpen();
+              PortClick = i + 1;
+              SetPortEinstellungen(PortClick);
             }}
           >
             <Text fontSize={16}> </Text>
@@ -305,7 +311,9 @@ function Portgrid() {
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Port Einstellungen</ModalHeader>
+            <ModalHeader>
+              Port Einstellungen: Port {PortEinstellungen}{' '}
+            </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl>

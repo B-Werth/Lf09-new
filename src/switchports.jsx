@@ -68,6 +68,7 @@ function Portgrid() {
 
   var PortClick = 0;
 
+  var VlanClick = 0;
   useEffect(() => {
     Axios.get('/VlanData')
       .then(function (response) {
@@ -153,6 +154,7 @@ function Portgrid() {
   const [PortColor, setPortColor] = useState({});
 
   const [PortEinstellungen, SetPortEinstellungen] = useState(0);
+  const [VlanEinstellungen, SetVlanEinstellungen] = useState(0);
 
   return (
     <div>
@@ -277,6 +279,8 @@ function Portgrid() {
               PortonOpen();
               PortClick = i + 1;
               SetPortEinstellungen(PortClick);
+              VlanClick = PortVlanID[i];
+              SetVlanEinstellungen(VlanClick);
             }}
           >
             <Text fontSize={16}> </Text>
@@ -312,13 +316,14 @@ function Portgrid() {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>
-              Port Einstellungen: Port {PortEinstellungen}{' '}
+              Port Einstellungen: <Tag> Port {PortEinstellungen} </Tag>
+              <Tag ml={2}> Vlan {VlanEinstellungen} </Tag>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel>Vlan</FormLabel>
-                <Select placeholder="Select option">
+                <Select placeholder={VlanEinstellungen}>
                   {SelectArray.fill().map((x, y) => (
                     <option>{Vlan_IDs[y]}</option>
                   ))}

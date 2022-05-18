@@ -104,6 +104,8 @@ function Portgrid() {
 
   let PortArray = new Array(PortAnzahl);
 
+  let SelectArray = new Array(VlanListensize);
+
   let VlanArray = new Array(VlanListensize);
 
   const addVlan = () => {
@@ -309,9 +311,9 @@ function Portgrid() {
               <FormControl>
                 <FormLabel>Vlan</FormLabel>
                 <Select placeholder="Select option">
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
+                  {SelectArray.fill().map((x, y) => (
+                    <option>{Vlan_IDs[y]}</option>
+                  ))}
                 </Select>
               </FormControl>
 

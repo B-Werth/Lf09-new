@@ -4,6 +4,9 @@ import { HexColorPicker } from 'react-colorful';
 import { GiCancel } from 'react-icons/gi';
 
 import {
+  Checkbox,
+  Select,
+  Tag,
   IconButton,
   Box,
   chakra,
@@ -63,13 +66,11 @@ function Portgrid() {
   const [Vlan_ID, setVlan_ID] = useState(2);
   const [Vlan_name, setVlan_name] = useState('name');
 
-  const [Port_Farbe, setPort_Farbe] = useState([]);
-
   useEffect(() => {
     Axios.get('/VlanData')
       .then(function (response) {
         VlanTabelle = response.data;
-        console.log(VlanTabelle);
+
         VlanLengths = response.data.length;
         setVlanlistensize(response.data.length);
         for (let i = 0; i < response.data.length; i++) {
@@ -94,8 +95,7 @@ function Portgrid() {
         }
 
         setPortVlanID(PortVlanIDs);
-
-        //Farben();
+        PortFarbenSetter();
       })
       .catch(function (error) {
         console.log(error);
@@ -121,19 +121,21 @@ function Portgrid() {
     Axios.delete(`/delete/${id}`);
   };
 
-  let Farben = () => {
-    for (let j = 0; j < VlanLengths; j++) {
-      for (let k = 0; k < 24; k++) {
-        if (PortFarben[k] === j + 1) {
-          PortFarben.splice(k, 1, Vlan_Farben[j]);
-        }
-      }
-    }
-    console.log(PortFarben);
-    setPort_Farbe(PortFarben);
+  let PortFarbenSetter = () => {
+    const obj = {};
+    Vlan_IDs.forEach((element, index) => {
+      obj[element] = Vlan_Farben[index];
+    });
+    setPortColor(obj);
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: PortisOpen,
+    onOpen: PortonOpen,
+    onClose: PortonClose,
+  } = useDisclosure();
 
   const initialRef = React.useRef();
   const finalRef = React.useRef();
@@ -143,6 +145,8 @@ function Portgrid() {
   const isError = VlanName_input === '';
 
   const [color, setColor] = useState('#aabbcc');
+
+  const [PortColor, setPortColor] = useState({});
 
   return (
     <div>
@@ -179,6 +183,7 @@ function Portgrid() {
           </Table>
         </TableContainer>{' '}
       </div>
+
       <div>
         <Button
           ref={finalRef}
@@ -258,16 +263,27 @@ function Portgrid() {
       <br />
       <Grid templateColumns="repeat(12, 2fr)" gap={10}>
         {PortArray.fill().map((v, i) => (
-          <div className="PortsRender" key={i} color="black">
-            <Text fontSize={16}> PortNr {i + 1}</Text>
-            <Text fontSize={16}> Vlan {PortVlanID[i]}</Text>
+          <div
+            className="PortsRender"
+            key={i}
+            color="black"
+            onClick={() => {
+              PortonOpen();
+            }}
+          >
+            <Text fontSize={16}> </Text>
+
+            <div>
+              <Tag>PortNr {i + 1}</Tag>
+            </div>
+            <Tag>Vlan {PortVlanID[i]}</Tag>
 
             <Ports
               boxShadow={'dark-lg'}
               id={i}
               whileHover={{ scale: 1.1 }}
               padding="2"
-              bg={VlanTabelle}
+              bg={PortColor[PortVlanID[i]]}
               display="flex"
               justifyContent="center"
               alignItems="center"
@@ -279,6 +295,40 @@ function Portgrid() {
             ></Ports>
           </div>
         ))}
+        <Modal
+          initialFocusRef={initialRef}
+          finalFocusRef={finalRef}
+          isOpen={PortisOpen}
+          onClose={PortonClose}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Port Einstellungen</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <FormControl>
+                <FormLabel>Vlan</FormLabel>
+                <Select placeholder="Select option">
+                  <option value="option1">Option 1</option>
+                  <option value="option2">Option 2</option>
+                  <option value="option3">Option 3</option>
+                </Select>
+              </FormControl>
+
+              <FormControl mt={4}>
+                <FormLabel>Tagged</FormLabel>
+                <Checkbox>Tagged</Checkbox>
+              </FormControl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3}>
+                Save
+              </Button>
+              <Button onClick={PortonClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Grid>
     </div>
   );

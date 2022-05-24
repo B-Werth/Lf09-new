@@ -61,6 +61,23 @@ app.get('/PortData', (req, res) => {
   });
 });
 
+app.put('/update', (req, res) => {
+  const id = req.body.id;
+  const Vid = req.body.Vid;
+
+  db.query(
+    'UPDATE port SET VlanID  = ? WHERE PortID = ?',
+    [Vid, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 app.listen(3001, () => {
   console.log('Server running on 3001 kid');
 });

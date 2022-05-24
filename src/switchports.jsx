@@ -37,6 +37,7 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react';
 import { motion, isValidMotionProp } from 'framer-motion';
+import axios from 'axios';
 
 const Ports = chakra(motion.div, {
   shouldForwardProp: isValidMotionProp,
@@ -65,6 +66,8 @@ function Portgrid() {
 
   const [Vlan_ID, setVlan_ID] = useState(2);
   const [Vlan_name, setVlan_name] = useState('name');
+
+  const [newVid, setNewVid] = useState(0);
 
   var PortClick = 0;
 
@@ -124,6 +127,12 @@ function Portgrid() {
 
   const deleteVlan = id => {
     Axios.delete(`/delete/${id}`);
+  };
+
+  const updateVlan = PortEinstellungen => {
+    axios
+      .put('/update', { Vid: newVid, id: PortEinstellungen })
+      .then(response => {});
   };
 
   let PortFarbenSetter = () => {
@@ -323,7 +332,12 @@ function Portgrid() {
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel>Vlan</FormLabel>
-                <Select placeholder={VlanEinstellungen}>
+                <Select
+                  onChange={event => {
+                    setNewVid(event.target.value);
+                  }}
+                  placeholder={VlanEinstellungen}
+                >
                   {SelectArray.fill().map((x, y) => (
                     <option>{Vlan_IDs[y]}</option>
                   ))}
@@ -337,7 +351,14 @@ function Portgrid() {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3}>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={() => {
+                  updateVlan(PortEinstellungen);
+                  window.location.reload();
+                }}
+              >
                 Save
               </Button>
               <Button onClick={PortonClose}>Cancel</Button>

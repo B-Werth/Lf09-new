@@ -359,7 +359,7 @@ function Portgrid() {
                   window.location.reload();
                 }}
               >
-                Save
+                Speichern
               </Button>
               <Button onClick={PortonClose}>Cancel</Button>
             </ModalFooter>

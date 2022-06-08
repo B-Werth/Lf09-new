@@ -341,6 +341,7 @@ function Portgrid() {
                   {SelectArray.fill().map((x, y) => (
                     <option>{Vlan_IDs[y]}</option>
                   ))}
+                  <option value={0}>Kein Vlan</option>
                 </Select>
               </FormControl>
 

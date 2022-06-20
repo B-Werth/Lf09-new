@@ -136,6 +136,7 @@ function Portgrid() {
   };
 
   let PortFarbenSetter = () => {
+    // Objekt mit VlanIDs und der Farbe
     const obj = {};
     Vlan_IDs.forEach((element, index) => {
       obj[element] = Vlan_Farben[index];
@@ -168,7 +169,6 @@ function Portgrid() {
   return (
     <div>
       <div>
-        <h2>Switch</h2>
         <TableContainer>
           <Table size="md">
             <Thead>
@@ -336,10 +336,11 @@ function Portgrid() {
                   onChange={event => {
                     setNewVid(event.target.value);
                   }}
-                  placeholder={VlanEinstellungen}
                 >
                   {SelectArray.fill().map((x, y) => (
-                    <option>{Vlan_IDs[y]}</option>
+                    <option value={Vlan_IDs[y]}>
+                      ({Vlan_IDs[y]}) {Vlan_names[y]}
+                    </option>
                   ))}
                   <option value={0}>Kein Vlan</option>
                 </Select>

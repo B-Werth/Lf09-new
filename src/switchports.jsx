@@ -190,6 +190,7 @@ function Portgrid() {
                       deleteVlan(Vlan_ID[i]);
                       window.location.reload();
                     }}
+                    mt={1.5}
                     variant="outline"
                     colorScheme="teal"
                     icon={<GiCancel />}

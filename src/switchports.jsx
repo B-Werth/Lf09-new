@@ -43,10 +43,6 @@ const Ports = chakra(motion.div, {
   shouldForwardProp: isValidMotionProp,
 });
 
-var VlanTabelle = {};
-
-var VlanLengths = 0;
-
 var PortAnzahl = 24;
 
 var Vlan_IDs = [];
@@ -75,9 +71,6 @@ function Portgrid() {
   useEffect(() => {
     Axios.get('/VlanData')
       .then(function (response) {
-        VlanTabelle = response.data;
-
-        VlanLengths = response.data.length;
         setVlanlistensize(response.data.length);
         for (let i = 0; i < response.data.length; i++) {
           Vlan_IDs.push(response.data[i].VlanID);
